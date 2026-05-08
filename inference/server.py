@@ -31,8 +31,9 @@ async def lifespan(app: FastAPI):
     logger.info("Initializing inference engine...")
     from inference.generation import InferenceEngine
     tokenizer_name = os.getenv("TOKENIZER_NAME", "google/gemma-2b")
+    model_path = os.getenv("MODEL_PATH", "./outputs/best_model.pt")
     inference_engine = InferenceEngine(
-        model_path="./outputs/best_model.pt",
+        model_path=model_path,
         device="cpu",
         tokenizer_name=tokenizer_name,
     )

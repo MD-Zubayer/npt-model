@@ -226,19 +226,23 @@ class Trainer:
     def save_checkpoint(self, path: Path):
         """Save model checkpoint."""
         path.parent.mkdir(parents=True, exist_ok=True)
-        
-        checkpoint = {
-            'model_state_dict': self.model.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict(),
-            'scheduler_state_dict': self.scheduler.state_dict() if self.scheduler else None,
-            'epoch': self.current_epoch,
-            'global_step': self.global_step,
-            'best_loss': self.best_loss,
-        }
-        
-        if self.scaler is not None:
-            checkpoint['scaler_state_dict'] = self.scaler.state_dict()
-        
+
+        weights_only_mode = os.getenv("NPT_SAVE_WEIGHTS_ONLY", "0") == "1"
+        if weights_only_mode:
+            checkpoint = self.model.state_dict()
+        else:
+            checkpoint = {
+                'model_state_dict': self.model.state_dict(),
+                'optimizer_state_dict': self.optimizer.state_dict(),
+                'scheduler_state_dict': self.scheduler.state_dict() if self.scheduler else None,
+                'epoch': self.current_epoch,
+                'global_step': self.global_step,
+                'best_loss': self.best_loss,
+            }
+
+            if self.scaler is not None:
+                checkpoint['scaler_state_dict'] = self.scaler.state_dict()
+
         torch.save(checkpoint, path)
         logger.info(f"Checkpoint saved: {path}")
     

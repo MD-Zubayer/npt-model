@@ -36,3 +36,9 @@ bash scripts/auto_run.sh --help
 ```
 
 চাইলে next step-এ আমি same workflow-এর জন্য `one-click web button` (UI থেকে fullserve trigger)ও যোগ করে দিতে পারি।
+
+
+
+!python3 scripts/export_weights_only.py --input outputs/best_model.pt --output outputs/best_model_weights_only.pt
+!rm -f outputs/final_model.pt outputs/best_model.pt
+!ls -lh outputs

@@ -17,23 +17,26 @@ def append_lines(path: str, lines):
 
 
 def download_bengali_data():
-    # Fallback list: first working source will be used.
+    # Multi-source list: all working sources will be appended.
     candidates = [
         ("wikimedia/wikipedia", "20231101.bn", "train", "text"),
         ("oscar-corpus/oscar", "unshuffled_deduplicated_bn", "train", "text"),
+        ("allenai/c4", "bn", "train", "text"),
     ]
 
+    success_count = 0
     for name, config, split, text_key in candidates:
         try:
             print(f"Downloading Bangla data: {name} ({config}) ...")
             ds = load_dataset(name, config, split=split)
             append_lines(OUT_PATH, (item.get(text_key, "") for item in ds))
             print(f"Bangla data added from {name}.")
-            return
+            success_count += 1
         except Exception as e:
             print(f"Bangla source failed ({name}/{config}): {e}")
 
-    raise RuntimeError("No Bangla dataset source could be downloaded.")
+    if success_count == 0:
+        raise RuntimeError("No Bangla dataset source could be downloaded.")
 
 
 def download_english_data():
