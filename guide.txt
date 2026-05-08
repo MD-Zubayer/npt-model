@@ -1,0 +1,38 @@
+হয়ে গেছে। আপনার জন্য auto script বানিয়ে দিয়েছি:  
+[auto_run.sh](/home/md-zubayer/npt-model/scripts/auto_run.sh)
+
+এখন থেকে manual command বারবার লাগবে না।
+
+ব্যবহার:
+
+```bash
+bash scripts/auto_run.sh prep
+```
+- data collection → cleaning → filtering → dedup একসাথে
+
+```bash
+bash scripts/auto_run.sh train
+```
+- training only
+
+```bash
+bash scripts/auto_run.sh serve
+```
+- inference server only
+
+```bash
+bash scripts/auto_run.sh fullserve
+```
+- prep + training + server একসাথে
+
+custom tokenizer/setting:
+```bash
+TOKENIZER_NAME=deepseek-ai/DeepSeek-V4-Pro EPOCHS=2 DATASET_SIZE=5000 BATCH_SIZE=2 bash scripts/auto_run.sh train
+```
+
+help:
+```bash
+bash scripts/auto_run.sh --help
+```
+
+চাইলে next step-এ আমি same workflow-এর জন্য `one-click web button` (UI থেকে fullserve trigger)ও যোগ করে দিতে পারি।

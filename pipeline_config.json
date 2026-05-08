@@ -1,0 +1,89 @@
+{
+  "project_name": "npt-model",
+  "version": "0.1.0",
+  "description": "Neural Pre-Trained Language Model",
+  
+  "data_collection": {
+    "enabled": true,
+    "web_crawl": false,
+    "pdf_extract": false,
+    "api_ingest": false,
+    "raw_data_dir": "./data/raw"
+  },
+  
+  "data_cleaning": {
+    "enabled": true,
+    "normalize": true,
+    "remove_noise": true,
+    "language_filter": true,
+    "target_languages": ["en", "bn"],
+    "output_dir": "./data/cleaned"
+  },
+  
+  "quality_filter": {
+    "enabled": true,
+    "toxicity_threshold": 0.5,
+    "quality_threshold": 0.5,
+    "use_classifier": true,
+    "output_dir": "./data/filtered"
+  },
+  
+  "deduplication": {
+    "enabled": true,
+    "similarity_threshold": 0.95,
+    "method": "semantic",
+    "output_dir": "./data/deduplicated"
+  },
+  
+  "tokenization": {
+    "enabled": false,
+    "tokenizer_type": "bpe",
+    "vocab_size": 50000,
+    "output_dir": "./model/tokenizer"
+  },
+  
+  "training": {
+    "enabled": true,
+    "model_config": {
+      "hidden_size": 768,
+      "num_hidden_layers": 12,
+      "num_attention_heads": 12,
+      "intermediate_size": 3072,
+      "max_position_embeddings": 2048,
+      "embedding_type": "rotary",
+      "use_flash_attention": true
+    },
+    "training_config": {
+      "num_train_epochs": 3,
+      "per_device_train_batch_size": 32,
+      "learning_rate": 1e-4,
+      "warmup_steps": 10000,
+      "save_steps": 1000,
+      "eval_steps": 500
+    },
+    "distributed": {
+      "enabled": false,
+      "backend": "deepspeed",
+      "num_gpus": 8
+    },
+    "output_dir": "./outputs"
+  },
+  
+  "evaluation": {
+    "enabled": true,
+    "metrics": [
+      "perplexity",
+      "accuracy",
+      "f1_score"
+    ],
+    "benchmark_datasets": [],
+    "output_dir": "./evaluation/results"
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "use_wandb": false,
+    "wandb_project": "npt-model",
+    "log_dir": "./experiments/logs"
+  }
+}

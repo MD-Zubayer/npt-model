@@ -1,0 +1,33 @@
+#!/bin/bash
+# FSDP (Fully Sharded Data Parallel) Configuration for PyTorch
+
+# Example: Run training with FSDP
+# torchrun --nproc_per_node=8 training/pretraining/train.py \
+#   --use-distributed \
+#   --distributed-backend fsdp \
+#   --fsdp-config fsdp_config.yaml
+
+# FSDP Configuration
+cpu_offload: false
+backward_prefetch: BACKWARD_PRE
+forward_prefetch: false
+limit_all_gathers: false
+cpu_offload_params: false
+sharding_strategy: FULL_SHARD  # Can be: FULL_SHARD, SHARD_GRAD_OP, NO_SHARD
+state_dict_type: SHARDED_STATE_DICT
+activation_checkpoint: true
+activation_checkpoint_modules: ["TransformerLayer"]
+
+# Memory optimization
+use_orig_params: true
+sync_module_states: true
+limit_all_gathers: true
+
+# Distributed training
+world_size: 8  # Number of GPUs
+rank: 0  # Will be overridden by torchrun
+backend: nccl
+
+# Gradient settings
+gradient_as_bucket_view: true
+synchronize_between_processes: true
