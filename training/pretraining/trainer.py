@@ -12,6 +12,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.distributed as dist
 from datetime import datetime
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,12 @@ class Trainer:
         total_loss = 0.0
         num_batches = 0
         
-        for step, batch in enumerate(train_dataloader):
+        progress = tqdm(
+            train_dataloader,
+            desc=f"Epoch {self.current_epoch + 1}",
+            leave=False,
+        )
+        for step, batch in enumerate(progress):
             # Move batch to device
             batch = {k: v.to(self.device) for k, v in batch.items()}
             
@@ -115,6 +121,20 @@ class Trainer:
             
             total_loss += loss.item()
             num_batches += 1
+
+            if step % 10 == 0:
+                progress.set_postfix(
+                    step=step,
+                    loss=f"{loss.item():.4f}",
+                    global_step=self.global_step,
+                )
+                logger.info(
+                    "Epoch %d Step %d | loss=%.4f | global_step=%d",
+                    self.current_epoch + 1,
+                    step,
+                    loss.item(),
+                    self.global_step,
+                )
             
             # Gradient accumulation
             if (step + 1) % gradient_accumulation_steps == 0:
