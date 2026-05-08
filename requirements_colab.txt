@@ -1,0 +1,9 @@
+torch
+transformers
+datasets
+tokenizers
+sentencepiece
+accelerate
+einops
+fastapi
+uvicorn
